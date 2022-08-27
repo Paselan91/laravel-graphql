@@ -2,6 +2,7 @@ version: "3.9"
 volumes:
   db-store:
   psysh-store:
+  phpmyadmin-session-store:
 services:
   app:
     build:
@@ -73,3 +74,14 @@ services:
         published: ${MAILHOG_PUBLISHED_PORT:-8025}
         protocol: tcp
         mode: host
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PHPMYADMIN_HOST=db
+      - PHPMYADMIN_USER=phper
+      - PHPMYADMIN_PASSWORD=secret
+    ports:
+      - 8080:80
+    volumes:
+      - phpmyadmin-session-store:/sessions
