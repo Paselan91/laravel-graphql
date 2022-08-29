@@ -1,0 +1,7 @@
+{
+    "parser": "graphql",
+    "useTabs": false,
+    "tabWidth": 2,
+    "endOfLine": "lf",
+    "printWidth": 120
+}
