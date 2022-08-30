@@ -7,9 +7,9 @@ namespace App\Domain\ValueObjects\Type;
 use Exception;
 
 /**
- * 文字列の基底クラス
+ * 文字列タイプの基底クラス
  */
-abstract class StringAbstract
+abstract class StringTypeAbstract
 {
     /** 最大文字数 */
     public const MAX = 255;

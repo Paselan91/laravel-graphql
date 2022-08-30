@@ -23,19 +23,18 @@ use App\Domain\User\ValueObject\IsBirthdayPublicValueObject;
 use App\Domain\UserMailNotificationSetting\Entity\UserMailNotificationSettingEntity;
 
 /**
- * ユーザー
+ * 投稿
  */
-final class UserEntity
+final class PostEntity
 {
-    public const NAME = 'ユーザー';
+    public const NAME = '投稿';
 
     private function __construct(
         private ?int $id,
-        private Name $name,
-        private Email $email,
-        private EmailVerifiedAt $emailVerifiedAt,
-        private ?EncriptedPassword $encriptedPassword,
-        private ?PlainPassword $plainPassword,
+        private UserId $userId,
+        private Title $title,
+        private Body $body,
+        private ?TopImagePath $topImagePath,
     ) {
     }
 
@@ -43,30 +42,30 @@ final class UserEntity
      * @param array $args
      * @return self
      */
-    public function create(array $args): self {
+    public function create(array $args): self
+    {
         return new self(
             null,
-            $args['name'],
-            $args['email'],
-            $args['email_verified_at'],
-            $args['encripted_password'],
-            $args['plain_password'],
+            $args['user_id'],
+            $args['title'],
+            $args['body'],
+            $args['top_image_path'],
         );
     }
 
     public function reconstruct(
-        int $id,
-        Name $name,
-        Email $email,
-        EncriptedPassword $encriptedPassword,
-        PlainPassword $plainPassword
+        ?int $id,
+        UserId $userId,
+        Title $title,
+        Body $body,
+        ?TopImagePath $topImagePath
     ): self {
         return new self(
             $id,
-            $name,
-            $email,
-            $encriptedPassword,
-            $plainPassword,
+            $userId,
+            $title,
+            $body,
+            $topImagePath
         );
     }
 
@@ -79,53 +78,42 @@ final class UserEntity
     }
 
     /**
-     * @return Name
+     * @return UserId
      */
-    public function getName(): Name
+    public function getUserId(): UserId
     {
-        return $this->name;
+        return $this->userId;
     }
 
     /**
-     * @return Email
+     * @return Title
      */
-    public function getEmail(): Email
+    public function getTitle(): Email
     {
-        return $this->email;
+        return $this->title;
     }
 
     /**
-     * @return EmailVerifiedAt
+     * @return Body
      */
-    public function getEmailVerifiedAt(): EmailVerifiedAt
+    public function getBody(): Body
     {
-        return $this->emailVerifedAt;
+        return $this->body;
     }
 
     /**
-     * @return EncriptedPassword
+     * @return TopImagePath|null
      */
-    public function getEncriptedPassword(): EncriptedPassword
+    public function getTopImagePath(): TopImagePath
     {
-        return $this->encriptedPassword;
+        return $this->topImagePath;
     }
 
     /**
-     * @return PlainPassword
+     * @return IsPublic
      */
-    public function getEncriptedPassword(): PlainPassword
+    public function getIsPublic(): IsPublic
     {
-        return $this->plainPassword;
-    }
-
-    /**
-     * 認証トークンのkeyを生成
-     *
-     * @param int $id
-     * @return string
-     */
-    public function createTokenKey(int $id): string
-    {
-        return "userId:{$id}";
+        return $this->isPublic;
     }
 }
