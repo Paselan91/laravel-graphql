@@ -8,17 +8,11 @@ use App\Domain\ValueObjects\Type\StringAbstract;
 use App\Exceptions\GraphQL\ValueObjectException;
 
 /**
- * 氏名
+ * メールアドレス認証日時
  */
-final class Name extends StringAbstract
+final class EmailVerifiedAt extends StringAbstract
 {
-    public const VARIABLE_NAME = '氏名';
-
-    /** 最大文字数 */
-    public const MAX = 50;
-
-    /**  最小文字数 */
-    public const MIN = 1;
+    public const VARIABLE_NAME = 'メールアドレス認証日時';
 
     /**
      * @param string $value
@@ -27,6 +21,8 @@ final class Name extends StringAbstract
         private string $value
     ) {
         $this->validate(self::VARIABLE_NAME, $value);
+
+        // TODO: メールアドレスの正規表現
 
         $this->value = $value;
     }

@@ -6,36 +6,45 @@ namespace App\Domain\User\Repository;
 
 use App\Domain\User\Entity\UserEntity;
 
-/**
- * ユーザー
- */
 interface UserRepositoryInterface
 {
     /**
-     * ユーザーを保存
+     * 新規作成/更新
      *
-     * @param UserEntity $userEntity
-     * @return int
+     * @param  UserEntity $userEntity ユーザーエンティティ
+     * @return int ユーザーID
      */
     public function store(UserEntity $userEntity): int;
 
     /**
      * IDから取得
      *
-     * @param int $userId
-     * @return UserEntity
+     * @param int $userId ユーザーID
+     * @return UserEntity ユーザーエンティティ
      */
     public function findById(int $userId): UserEntity;
 
     /**
-     * 指定された条件をリレーションし、IDから取得
+     * IDから取得（指定された条件をリレーション）
      *
-     * @param int $userId
-     * @param string[] $withRelations リレーション条件
-     * @return UserEntity
+     * @param int $userId ユーザーID
+     * @param string[] $relations リレーション条件
+     * @return UserEntity ユーザーエンティティ
      */
-    public function findByIdWithRelations(
+    public function findByIdRelations(
         int $userId,
-        array $withRelations = []
+        array $relations = [] // TODO: sharedでclassにする？
+    ): UserEntity;
+
+    /**
+     * IDから取得（指定された条件で絞り込み）
+     *
+     * @param int $userId ユーザーID
+     * @param string[] $where 絞り込み条件
+     * @return UserEntity ユーザーエンティティ
+     */
+    public function findByIdWhere(
+        int $userId,
+        array $where = [] // TODO: sharedでclassにする？
     ): UserEntity;
 }

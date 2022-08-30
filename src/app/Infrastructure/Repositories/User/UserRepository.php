@@ -25,23 +25,7 @@ use Throwable;
 
 final class UserRepository implements UserRepositoryInterface
 {
-    /**
-     * @param UserCredentialRepositoryInterface $userCredentialRepository
-     * @param UserCredentialFactory $userCredentialFactory
-     * @param UserProfileRepositoryInterface $userProfileRepository
-     * @param UserProfileFactory $userProfileFactory
-     * @param UserMailNotificationSettingRepositoryInterface $userMailNotificationSettingRepository
-     * @param UserMailNotificationSettingFactory $userMailNotificationSettingFactory
-     * @param UserImageRepositoryInterface $userImageRepository
-     */
     public function __construct(
-        private UserCredentialRepositoryInterface $userCredentialRepository,
-        private UserCredentialFactory $userCredentialFactory,
-        private UserProfileRepositoryInterface $userProfileRepository,
-        private UserProfileFactory $userProfileFactory,
-        private UserMailNotificationSettingRepositoryInterface $userMailNotificationSettingRepository,
-        private UserMailNotificationSettingFactory $userMailNotificationSettingFactory,
-        private UserImageRepositoryInterface $userImageRepository,
     ) {
     }
 
@@ -50,52 +34,17 @@ final class UserRepository implements UserRepositoryInterface
      */
     public function store(UserEntity $userEntity): int
     {
-        $now = CarbonImmutable::now();
-
         $param = [
-            'user_sub_id'        => $userEntity->getUserSubId()->value(),
-            'name'               => $userEntity->getName()->value(),
-            'birthday'           => $userEntity->getBirthday()->value(),
-            'is_birthday_public' => $userEntity->getIsBirthdayPublic()->value(),
-            'is_public'          => $userEntity->getIsPublic()->value(),
-            'total_favorite'     => $userEntity->getTotalFavorite()->value(),
-            'total_nice'         => $userEntity->getTotalNice()->value(),
+            'name' => $userEntity->getName()->value(),
+            'email' => $userEntity->getEmail()->value(),
+            'email_verified_at' => $userEntity->getEmailVerifiedAt()->value(),
+            'password' => $userEntity->getEncriptedPassword()->value(),
         ];
 
         $userModel = User::updateOrCreate(
             ['id' => $userEntity->getId()],
             $param
         );
-
-        // UserCredential の生成
-        if (! is_null($userEntity->getUserCredential())) {
-            $this->storeUserCredential(
-                $userEntity->getUserCredential(),
-                $userModel->id
-            );
-        }
-
-        // UserProfile の生成
-        if (! is_null($userEntity->getUserProfile())) {
-            $this->storeUserProfile(
-                $userEntity->getUserProfile(),
-                $userModel->id
-            );
-        }
-
-        // UserMailNotificationSetting を生成
-        if (! is_null($userEntity->getUserMailNotificationSetting())) {
-            $this->storeUserMailNotificationSetting(
-                $userEntity->getUserMailNotificationSetting(),
-                $userModel->id
-            );
-        }
-
-        // UserImage の生成
-        if (! is_null($userEntity->getUserImageList())) {
-            $this->userImageRepository->deleteByUserId($userModel->id);
-            $this->userImageRepository->bulkInsert($userEntity->getUserImageList(), $now);
-        }
 
         return $userModel->id;
     }
@@ -108,7 +57,7 @@ final class UserRepository implements UserRepositoryInterface
         try {
             $user = User::findOrFail($userId);
         } catch (Throwable $e) {
-            $entityName = UserEntity::displayVariableName();
+            $entityName = UserEntity::NAME;
 
             throw new RecordsNotFoundException("指定された{$entityName}が見つかりませんでした。ID:{$userId}");
         }
@@ -119,14 +68,14 @@ final class UserRepository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findByIdWithRelations(
+    public function findByIdRelations(
         int $userId,
-        array $withRelations = [],
+        array $relations = [],
     ): UserEntity {
         try {
-            $user = User::with($withRelations)->findOrFail($userId);
+            $user = User::with($relations)->findOrFail($userId);
         } catch (Throwable $e) {
-            $variableName = UserEntity::displayVariableName();
+            $variableName = UserEntity::NAME;
 
             throw new RecordsNotFoundException("指定された{$variableName}が見つかりません");
         }
@@ -135,70 +84,20 @@ final class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * UserCredentail を生成
-     *
-     * @param UserCredentialEntity $userCredentialEntity
-     * @param int $userId
-     * @return void
+     * @inheritDoc
      */
-    private function storeUserCredential(
-        UserCredentialEntity $userCredentialEntity,
-        int $userId
-    ): void {
-        $userCredentialEntity = $this->userCredentialFactory->reconstruct(
-            $userCredentialEntity->getId(),
-            $userId,
-            $userCredentialEntity->getPlainPassword(),
-            $userCredentialEntity->getEncryptedPassword(),
-            $userCredentialEntity->getMailAddress(),
-            $userCredentialEntity->getTwitterSubId(),
-            $userCredentialEntity->getGoogleSubId(),
-        );
-        $this->userCredentialRepository->store($userCredentialEntity);
-    }
+    public function findByIdWhere(
+        int $userId,
+        array $where = [],
+    ): UserEntity {
+        try {
+            $user = User::where($where)->findOrFail($userId);
+        } catch (Throwable $e) {
+            $variableName = UserEntity::NAME;
 
-    /**
-     * UserProfile を生成
-     *
-     * @param UserProfileEntity $userProfileEntity
-     * @param int $userId
-     * @return void
-     */
-    private function storeUserProfile(
-        UserProfileEntity $userProfileEntity,
-        int $userId
-    ): void {
-        $userProfileEntity = $this->userProfileFactory->reconstruct(
-            $userProfileEntity->getId(),
-            $userId,
-            $userProfileEntity->getCoverImagePath(),
-            $userProfileEntity->getIconImagePath(),
-            $userProfileEntity->getIntroduction(),
-            $userProfileEntity->getIsPublicFollowlist(),
-        );
-        $this->userProfileRepository->store($userProfileEntity);
-    }
+            throw new RecordsNotFoundException("指定された{$variableName}が見つかりません");
+        }
 
-    /**
-     * UserMailNotificationSetting を生成
-     *
-     * @param UserMailNotificationSettingEntity $userMailNotificationSettingEntity
-     * @param int $userId
-     * @return void
-     */
-    private function storeUserMailNotificationSetting(
-        UserMailNotificationSettingEntity $userMailNotificationSettingEntity,
-        int $userId
-    ): void {
-        $userMailNotificationSettingEntity = $this->userMailNotificationSettingFactory->reconstruct(
-            $userMailNotificationSettingEntity->getId(),
-            $userId,
-            $userMailNotificationSettingEntity->getFavoriteAndNice(),
-            $userMailNotificationSettingEntity->getNewArrivalPost(),
-            $userMailNotificationSettingEntity->getComment(),
-            $userMailNotificationSettingEntity->getMessage(),
-            $userMailNotificationSettingEntity->getBirthday(),
-        );
-        $this->userMailNotificationSettingRepository->store($userMailNotificationSettingEntity);
+        return $user->toEntity();
     }
 }

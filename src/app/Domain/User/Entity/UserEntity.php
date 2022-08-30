@@ -4,64 +4,70 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Entity;
 
-use App\Domain\User\ValueObject\BirthdayValueObject;
-use App\Domain\User\ValueObject\IsBirthdayPublicValueObject;
-use App\Domain\User\ValueObject\IsPublicValueObject;
+use Faker\Guesser\Name;
+use Carbon\CarbonImmutable;
+use App\Domain\User\ValueObject\Email;
+use App\Domain\User\ValueObject\PlainPassword;
+use App\Domain\User\ValueObject\EmailVerifiedAt;
 use App\Domain\User\ValueObject\NameValueObject;
-use App\Domain\User\ValueObject\TotalFavoriteValueObject;
+use App\Domain\User\ValueObject\EncriptedPassword;
+use App\Domain\User\ValueObject\BirthdayValueObject;
+use App\Domain\User\ValueObject\IsPublicValueObject;
+use App\Domain\UserImage\Entity\UserImageEntityList;
+use App\Domain\UserProfile\Entity\UserProfileEntity;
 use App\Domain\User\ValueObject\TotalNiceValueObject;
 use App\Domain\User\ValueObject\UserSubIdValueObject;
+use App\Domain\User\ValueObject\TotalFavoriteValueObject;
 use App\Domain\UserCredential\Entity\UserCredentialEntity;
-use App\Domain\UserImage\Entity\UserImageEntityList;
+use App\Domain\User\ValueObject\IsBirthdayPublicValueObject;
 use App\Domain\UserMailNotificationSetting\Entity\UserMailNotificationSettingEntity;
-use App\Domain\UserProfile\Entity\UserProfileEntity;
-use Carbon\CarbonImmutable;
 
 /**
  * ユーザー
  */
 final class UserEntity
 {
-    private const VARIABLE_NAME = 'ユーザー';
+    public const NAME = 'ユーザー';
 
-    /**
-     * @param int|null $id
-     * @param UserSubIdValueObject $userSubId
-     * @param NameValueObject $name
-     * @param BirthdayValueObject $birthday
-     * @param IsBirthdayPublicValueObject $isBirthdayPublic
-     * @param IsPublicValueObject $isPublic
-     * @param TotalFavoriteValueObject $totalFavorite
-     * @param TotalNiceValueObject $totalNice
-     * @param CarbonImmutable|null $createdAt
-     * @param UserCredentialEntity|null $userCredential
-     * @param UserProfileEntity|null $userProfile
-     * @param UserMailNotificationSettingEntity|null $userMailNotificationSetting
-     * @param UserImageEntityList|null $userImageList
-     */
-    public function __construct(
+    private function __construct(
         private ?int $id,
-        private UserSubIdValueObject $userSubId,
-        private NameValueObject $name,
-        private BirthdayValueObject $birthday,
-        private IsBirthdayPublicValueObject $isBirthdayPublic,
-        private IsPublicValueObject $isPublic,
-        private TotalFavoriteValueObject $totalFavorite,
-        private TotalNiceValueObject $totalNice,
-        private ?CarbonImmutable $createdAt,
-        private ?UserCredentialEntity $userCredential,
-        private ?UserProfileEntity $userProfile,
-        private ?UserMailNotificationSettingEntity $userMailNotificationSetting,
-        private ?UserImageEntityList $userImageList,
+        private Name $name,
+        private Email $email,
+        private EmailVerifiedAt $emailVerifiedAt,
+        private ?EncriptedPassword $encriptedPassword,
+        private ?PlainPassword $plainPassword,
     ) {
     }
 
     /**
-     * @return string
+     * @param array $args
+     * @return self
      */
-    public static function displayVariableName(): string
-    {
-        return self::VARIABLE_NAME;
+    public function create(array $args): self {
+        return new self(
+            null,
+            $args['name'],
+            $args['email'],
+            $args['email_verified_at'],
+            $args['encripted_password'],
+            $args['plain_password'],
+        );
+    }
+
+    public function reconstruct(
+        int $id,
+        Name $name,
+        Email $email,
+        EncriptedPassword $encriptedPassword,
+        PlainPassword $plainPassword
+    ): self {
+        return new self(
+            $id,
+            $name,
+            $email,
+            $encriptedPassword,
+            $plainPassword,
+        );
     }
 
     /**
@@ -73,99 +79,43 @@ final class UserEntity
     }
 
     /**
-     * @return UserSubIdValueObject
+     * @return Name
      */
-    public function getUserSubId(): UserSubIdValueObject
-    {
-        return $this->userSubId;
-    }
-
-    /**
-     * @return NameValueObject
-     */
-    public function getName(): NameValueObject
+    public function getName(): Name
     {
         return $this->name;
     }
 
     /**
-     * @return BirthdayValueObject
+     * @return Email
      */
-    public function getBirthday(): BirthdayValueObject
+    public function getEmail(): Email
     {
-        return $this->birthday;
+        return $this->email;
     }
 
     /**
-     * @return IsBirthdayPublicValueObject
+     * @return EmailVerifiedAt
      */
-    public function getIsBirthdayPublic(): IsBirthdayPublicValueObject
+    public function getEmailVerifedAt(): EmailVerifiedAt
     {
-        return $this->isBirthdayPublic;
+        return $this->emailVerifedAt;
     }
 
     /**
-     * @return IsPublicValueObject
+     * @return EncriptedPassword
      */
-    public function getIsPublic(): IsPublicValueObject
+    public function getEncriptedPassword(): EncriptedPassword
     {
-        return $this->isPublic;
+        return $this->encriptedPassword;
     }
 
     /**
-     * @return TotalFavoriteValueObject
+     * @return PlainPassword
      */
-    public function getTotalFavorite(): TotalFavoriteValueObject
+    public function getEncriptedPassword(): PlainPassword
     {
-        return $this->totalFavorite;
-    }
-
-    /**
-     * @return TotalNiceValueObject
-     */
-    public function getTotalNice(): TotalNiceValueObject
-    {
-        return $this->totalNice;
-    }
-
-    /**
-     * @return CarbonImmutable|null
-     */
-    public function getCreatedAt(): ?CarbonImmutable
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return UserCredentialEntity|null
-     */
-    public function getUserCredential(): ?UserCredentialEntity
-    {
-        return $this->userCredential;
-    }
-
-    /**
-     * @return UserProfileEntity|null
-     */
-    public function getUserProfile(): ?UserProfileEntity
-    {
-        return $this->userProfile;
-    }
-
-    /**
-     * @return UserMailNotificationSettingEntity|null
-     */
-    public function getUserMailNotificationSetting(): ?UserMailNotificationSettingEntity
-    {
-        return $this->userMailNotificationSetting;
-    }
-
-    /**
-     * @return UserImageEntityList|null
-     */
-    public function getUserImageList(): ?UserImageEntityList
-    {
-        return $this->userImageList;
+        return $this->plainPassword;
     }
 
     /**

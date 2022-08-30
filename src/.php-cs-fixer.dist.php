@@ -105,7 +105,7 @@ return $config
         'phpdoc_trim'                                 => true,
         'phpdoc_types'                                => true,
         'phpdoc_var_without_name'                     => true,
-        'phpdoc_align'                     => ['vertical'],
+        'phpdoc_align'                                => ['vertical'],
         'short_scalar_cast'                           => true,
         'single_blank_line_before_namespace'          => true,
         'single_line_comment_style'                   => ['comment_types' => ['hash']],
