@@ -14,7 +14,11 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 
+<<<<<<< HEAD
 // ルール https://mlocati.github.io/php-cs-fixer-configurator/#version:3.8
+=======
+// https://mlocati.github.io/php-cs-fixer-configurator/#version:3.8
+>>>>>>> 239fa6baacb370f238a89526f43c44d82f17d75a
 return $config
     ->setRiskyAllowed(true)
     ->setRules([
@@ -105,7 +109,10 @@ return $config
         'phpdoc_trim'                                 => true,
         'phpdoc_types'                                => true,
         'phpdoc_var_without_name'                     => true,
+<<<<<<< HEAD
         'phpdoc_align'                                => ['vertical'],
+=======
+>>>>>>> 239fa6baacb370f238a89526f43c44d82f17d75a
         'short_scalar_cast'                           => true,
         'single_blank_line_before_namespace'          => true,
         'single_line_comment_style'                   => ['comment_types' => ['hash']],
