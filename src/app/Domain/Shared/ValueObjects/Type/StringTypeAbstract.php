@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\ValueObjects\Type;
+namespace App\Domain\Shared\ValueObjects\Type;
 
 use Exception;
 
@@ -18,8 +18,8 @@ abstract class StringTypeAbstract
     public const MIN = 1;
 
     /**
-     * @param string $variableName 変数名
-     * @param string $value 値
+     * @param  string $variableName 変数名
+     * @param  string $value        値
      * @return void
      */
     public function validate(
@@ -31,7 +31,7 @@ abstract class StringTypeAbstract
 
         $charas = mb_strlen($value, 'UTF-8');
         if ($charas < $min || $charas > $max) {
-            throw new Exception("{$min}文字以上{$max}文字以内で入力されていないのでエラーが発生しました。", "{$variableName}は{$min}文字以上{$max}文字以内で入力してください。");
+            throw new Exception("{$min}文字以上{$max}文字以内で入力されていないのでエラーが発生しました。{$variableName}は{$min}文字以上{$max}文字以内で入力してください。");
         }
     }
 }

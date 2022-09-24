@@ -6,6 +6,7 @@ namespace App\UseCases\User\Dto;
 
 use App\Domain\User\Entity\UserEntity;
 use App\Infrastructure\Models\User;
+use Exception;
 
 /**
  * ユーザー
@@ -13,20 +14,28 @@ use App\Infrastructure\Models\User;
 final class UserDto
 {
     /**
-     * @param UserEntity $userEntity
+     * @param  UserEntity $userEntity
      * @return User
      */
     public function toModel(UserEntity $userEntity): User
     {
+        $variableName = UserEntity::NAME;
+
         $user = new User();
-        $user->id = (int) $userEntity->getId();
-        $user->user_sub_id = (string) $userEntity->getUserSubId()->value();
+
+        if (is_null($userEntity->getId())) {
+            throw new Exception("{$variableName}エンティティ ID が NULL です");
+        }
+        $user->id = $userEntity->getId();
+
         $user->name = $userEntity->getName()->value();
-        $user->birthday = $userEntity->getBirthday()->strValue();
-        $user->is_birthday_public = $userEntity->getIsBirthdayPublic()->value();
-        $user->is_public = $userEntity->getIsPublic()->value();
-        $user->total_favorite = $userEntity->getTotalFavorite()->value();
-        $user->total_nice = $userEntity->getTotalNice()->value();
+        $user->email = $userEntity->getEmail()->value();
+        $user->email_verified_at = $userEntity->getEmailVerifiedAt()->value()->toMutable();
+
+        if (is_null($userEntity->getEncriptedPassword())) {
+            throw new Exception("{$variableName}エンティティ encriptedPassword が NULL です");
+        }
+        $user->password = $userEntity->getEncriptedPassword()->value();
 
         return $user;
     }

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\User\ValueObject;
 
-use App\Domain\ValueObjects\Type\StringAbstract;
-use App\Exceptions\GraphQL\ValueObjectException;
+use App\Domain\Shared\ValueObjects\Type\StringTypeAbstract;
 
 /**
  * メールアドレス
  */
-final class Email extends StringAbstract
+final class Email extends StringTypeAbstract
 {
     public const VARIABLE_NAME = 'メールアドレス';
 
@@ -29,8 +28,6 @@ final class Email extends StringAbstract
         $this->validate(self::VARIABLE_NAME, $value);
 
         // TODO: メールアドレスの正規表現
-
-        $this->value = $value;
     }
 
     /**

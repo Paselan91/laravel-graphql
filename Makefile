@@ -105,3 +105,9 @@ ide-helper:
 	docker compose exec app php artisan ide-helper:generate
 	docker compose exec app php artisan ide-helper:meta
 	docker compose exec app php artisan ide-helper:models --nowrite
+format:
+	docker compose exec app composer formatting
+lint:
+	docker compose exec app composer lint
+schema:
+	docker compose exec app php artisan lighthouse:validate-schema

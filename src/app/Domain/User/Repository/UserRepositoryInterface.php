@@ -11,15 +11,15 @@ interface UserRepositoryInterface
     /**
      * 新規作成/更新
      *
-     * @param  UserEntity $userEntity ユーザーエンティティ
-     * @return int ユーザーID
+     * @param  UserEntity $userEntity
+     * @return int        ユーザーID
      */
     public function store(UserEntity $userEntity): int;
 
     /**
      * IDから取得
      *
-     * @param int $userId ユーザーID
+     * @param  int        $userId ユーザーID
      * @return UserEntity ユーザーエンティティ
      */
     public function findById(int $userId): UserEntity;
@@ -27,24 +27,24 @@ interface UserRepositoryInterface
     /**
      * IDから取得（指定された条件をリレーション）
      *
-     * @param int $userId ユーザーID
-     * @param string[] $relations リレーション条件
+     * @param  int        $userId    ユーザーID
+     * @param  string[]   $relations リレーション条件
      * @return UserEntity ユーザーエンティティ
      */
     public function findByIdRelations(
         int $userId,
-        array $relations = [] // TODO: sharedでclassにする？
+        array $relations = []
     ): UserEntity;
 
     /**
      * IDから取得（指定された条件で絞り込み）
      *
-     * @param int $userId ユーザーID
-     * @param string[] $where 絞り込み条件
+     * @param  int        $userId ユーザーID
+     * @param  string[]   $where  絞り込み条件
      * @return UserEntity ユーザーエンティティ
      */
     public function findByIdWhere(
         int $userId,
-        array $where = [] // TODO: sharedでclassにする？
+        array $where = []
     ): UserEntity;
 }
