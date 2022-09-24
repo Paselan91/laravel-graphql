@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\GraphQL\User\Query\Inputs;
+namespace App\GraphQL\User\Query\FetchUserByIdQuery;
 
 final class FetchUserByIdInput
 {

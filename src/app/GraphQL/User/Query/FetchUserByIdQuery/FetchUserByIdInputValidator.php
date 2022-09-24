@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\GraphQL\User\Validator;
+namespace App\GraphQL\User\Query\FetchUserByIdQuery;
 
 use App\Domain\User\Entity\UserEntity;
 use Nuwave\Lighthouse\Validation\Validator;

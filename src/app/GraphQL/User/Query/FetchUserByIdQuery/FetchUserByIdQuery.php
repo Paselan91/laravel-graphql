@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\GraphQL\User\Query;
+namespace App\GraphQL\User\Query\FetchUserByIdQuery;
 
-use App\GraphQL\User\Query\Inputs\FetchUserByIdInput;
 use App\Infrastructure\Models\User;
 use App\UseCases\User\UseCase\FetchUserByIdUseCase;
 

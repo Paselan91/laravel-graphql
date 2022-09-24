@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\UseCases\User\UseCase;
 
 use App\Domain\User\Repository\UserRepositoryInterface;
-use App\GraphQL\User\Query\Inputs\FetchUserByIdInput;
+use App\GraphQL\User\Query\FetchUserByIdQuery\FetchUserByIdInput;
 use App\Infrastructure\Models\User;
 use App\UseCases\User\Dto\UserDto;
 
