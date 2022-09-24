@@ -4,23 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Entity;
 
-use Faker\Guesser\Name;
-use Carbon\CarbonImmutable;
 use App\Domain\User\ValueObject\Email;
-use App\Domain\User\ValueObject\PlainPassword;
 use App\Domain\User\ValueObject\EmailVerifiedAt;
-use App\Domain\User\ValueObject\NameValueObject;
 use App\Domain\User\ValueObject\EncriptedPassword;
-use App\Domain\User\ValueObject\BirthdayValueObject;
-use App\Domain\User\ValueObject\IsPublicValueObject;
-use App\Domain\UserImage\Entity\UserImageEntityList;
-use App\Domain\UserProfile\Entity\UserProfileEntity;
-use App\Domain\User\ValueObject\TotalNiceValueObject;
-use App\Domain\User\ValueObject\UserSubIdValueObject;
-use App\Domain\User\ValueObject\TotalFavoriteValueObject;
-use App\Domain\UserCredential\Entity\UserCredentialEntity;
-use App\Domain\User\ValueObject\IsBirthdayPublicValueObject;
-use App\Domain\UserMailNotificationSetting\Entity\UserMailNotificationSettingEntity;
+use App\Domain\User\ValueObject\Name;
+use App\Domain\User\ValueObject\PlainPassword;
+use Carbon\CarbonImmutable;
 
 /**
  * ユーザー
@@ -29,6 +18,14 @@ final class UserEntity
 {
     public const NAME = 'ユーザー';
 
+    /**
+     * @param int|null               $id
+     * @param Name                   $name
+     * @param Email                  $email
+     * @param EmailVerifiedAt        $emailVerifiedAt
+     * @param EncriptedPassword|null $encriptedPassword
+     * @param PlainPassword|null     $plainPassword
+     */
     private function __construct(
         private ?int $id,
         private Name $name,
@@ -40,31 +37,51 @@ final class UserEntity
     }
 
     /**
-     * @param array $args
+     * @param  array<string, int|string> $args
      * @return self
      */
-    public function create(array $args): self {
+    public static function create(array $args): self
+    {
+        $encriptedPassword = array_key_exists('encripted_password', $args)
+            ? new EncriptedPassword((string) $args['encripted_password'])
+            : null;
+
+        $plainPassword = array_key_exists('plain_password', $args)
+            ? new PlainPassword((string) $args['plain_password'])
+            : null;
+
         return new self(
             null,
-            $args['name'],
-            $args['email'],
-            $args['email_verified_at'],
-            $args['encripted_password'],
-            $args['plain_password'],
+            new Name((string) $args['name']),
+            new Email((string) $args['email']),
+            new EmailVerifiedAt(new CarbonImmutable((string) $args['email_verified_at'])),
+            $encriptedPassword,
+            $plainPassword,
         );
     }
 
-    public function reconstruct(
+    /**
+     * @param  int                    $id
+     * @param  Name                   $name
+     * @param  Email                  $email
+     * @param  EmailVerifiedAt        $emailVerifiedAt
+     * @param  EncriptedPassword|null $encriptedPassword
+     * @param  PlainPassword|null     $plainPassword
+     * @return self
+     */
+    public static function reconstruct(
         int $id,
         Name $name,
         Email $email,
-        EncriptedPassword $encriptedPassword,
-        PlainPassword $plainPassword
+        EmailVerifiedAt $emailVerifiedAt,
+        ?EncriptedPassword $encriptedPassword,
+        ?PlainPassword $plainPassword
     ): self {
         return new self(
             $id,
             $name,
             $email,
+            $emailVerifiedAt,
             $encriptedPassword,
             $plainPassword,
         );
@@ -97,23 +114,23 @@ final class UserEntity
     /**
      * @return EmailVerifiedAt
      */
-    public function getEmailVerifedAt(): EmailVerifiedAt
+    public function getEmailVerifiedAt(): EmailVerifiedAt
     {
-        return $this->emailVerifedAt;
+        return $this->emailVerifiedAt;
     }
 
     /**
-     * @return EncriptedPassword
+     * @return EncriptedPassword|null
      */
-    public function getEncriptedPassword(): EncriptedPassword
+    public function getEncriptedPassword(): ?EncriptedPassword
     {
         return $this->encriptedPassword;
     }
 
     /**
-     * @return PlainPassword
+     * @return PlainPassword|null
      */
-    public function getEncriptedPassword(): PlainPassword
+    public function getPlainPassword(): ?PlainPassword
     {
         return $this->plainPassword;
     }
@@ -121,7 +138,7 @@ final class UserEntity
     /**
      * 認証トークンのkeyを生成
      *
-     * @param int $id
+     * @param  int    $id
      * @return string
      */
     public function createTokenKey(int $id): string

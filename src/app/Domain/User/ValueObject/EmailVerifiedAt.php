@@ -4,33 +4,27 @@ declare(strict_types=1);
 
 namespace App\Domain\User\ValueObject;
 
-use App\Domain\ValueObjects\Type\StringAbstract;
-use App\Exceptions\GraphQL\ValueObjectException;
+use Carbon\CarbonImmutable;
 
 /**
  * メールアドレス認証日時
  */
-final class EmailVerifiedAt extends StringAbstract
+final class EmailVerifiedAt
 {
     public const VARIABLE_NAME = 'メールアドレス認証日時';
 
     /**
-     * @param string $value
+     * @param CarbonImmutable $value
      */
     public function __construct(
-        private string $value
+        private CarbonImmutable $value
     ) {
-        $this->validate(self::VARIABLE_NAME, $value);
-
-        // TODO: メールアドレスの正規表現
-
-        $this->value = $value;
     }
 
     /**
-     * @return string
+     * @return CarbonImmutable
      */
-    public function value(): string
+    public function value(): CarbonImmutable
     {
         return $this->value;
     }

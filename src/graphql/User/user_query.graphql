@@ -1,5 +1,7 @@
 extend type Query{
     fetchAllUser: [User!] @all
 
-    fetchUserById(id: ID! @eq): User @find
+    fetchUserById(id: ID!): User
+        @validator(class: "App\\GraphQL\\User\\Validator\\FetchUserByIdInputValidator")
+        @field(resolver: "App\\GraphQL\\User\\Query\\FetchUserByIdQuery")
 }

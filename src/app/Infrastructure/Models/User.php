@@ -5,6 +5,13 @@ declare(strict_types=1);
 namespace App\Infrastructure\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Domain\User\Entity\UserEntity;
+use App\Domain\User\ValueObject\Email;
+use App\Domain\User\ValueObject\EmailVerifiedAt;
+use App\Domain\User\ValueObject\EncriptedPassword;
+use App\Domain\User\ValueObject\Name;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -43,4 +50,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @return UserEntity
+     */
+    public function toEntity(): UserEntity
+    {
+        return UserEntity::reconstruct(
+            $this->id,
+            new Name($this->name),
+            new Email($this->email),
+            new EmailVerifiedAt(CarbonImmutable::parse($this->email_verified_at)),
+            new EncriptedPassword($this->password),
+            null
+        );
+    }
 }

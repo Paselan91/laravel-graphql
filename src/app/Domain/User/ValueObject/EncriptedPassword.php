@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\User\ValueObject;
 
-use App\Domain\ValueObjects\Type\StringAbstract;
-use App\Exceptions\GraphQL\ValueObjectException;
+use App\Domain\Shared\ValueObjects\Type\StringTypeAbstract;
 
 /**
  * パスワード（暗号化）
  */
-final class EncriptedPassword extends StringAbstract
+final class EncriptedPassword extends StringTypeAbstract
 {
     public const VARIABLE_NAME = 'パスワード（暗号化）';
 
@@ -22,9 +21,7 @@ final class EncriptedPassword extends StringAbstract
     ) {
         $this->validate(self::VARIABLE_NAME, $value);
 
-        // TODO: パスワードの正規表現
-
-        $this->value = $value;
+        // TODO: パスワードの正規表現チェック
     }
 
     /**
