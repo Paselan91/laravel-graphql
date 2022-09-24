@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        // TODO: 文字数制限、論理名をいれる
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
