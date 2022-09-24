@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Post\ValueObject;
 
-use App\Domain\ValueObjects\Type\StringAbstract;
-use App\Exceptions\GraphQL\ValueObjectException;
+use App\Domain\Shared\ValueObjects\Type\StringTypeAbstract;
 
 /**
  * 本文
  */
-final class Body extends StringAbstract
+final class Body extends StringTypeAbstract
 {
     public const VARIABLE_NAME = '本文';
 
@@ -27,8 +26,6 @@ final class Body extends StringAbstract
         private string $value
     ) {
         $this->validate(self::VARIABLE_NAME, $value);
-
-        $this->value = $value;
     }
 
     /**

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Post\ValueObject;
 
 use App\Domain\ValueObjects\Type\UrlAbstract;
-use App\Domain\ValueObjects\Type\StringAbstract;
-use App\Exceptions\GraphQL\ValueObjectException;
 
 /**
  * トップ画像パス
@@ -28,8 +26,6 @@ final class TopImagePath extends UrlAbstract
         private string $value
     ) {
         parent::validate(self::VARIABLE_NAME, $value);
-
-        $this->value = $value;
     }
 
     /**

@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Post\ValueObject;
 
-use App\Domain\ValueObjects\Type\UrlAbstract;
-use App\Domain\ValueObjects\Type\BoolAbstract;
-use App\Domain\ValueObjects\Type\StringAbstract;
-use App\Exceptions\GraphQL\ValueObjectException;
-
 /**
  * 公開状態か
  */
-final class IsPublic extends BoolAbstract
+final class IsPublic
 {
     public const VARIABLE_NAME = '公開状態か';
 
@@ -31,7 +26,6 @@ final class IsPublic extends BoolAbstract
     public function __construct(
         private bool $value
     ) {
-        $this->value = $value;
     }
 
     /**
@@ -43,9 +37,9 @@ final class IsPublic extends BoolAbstract
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function value(): string
+    public function value(): bool
     {
         return $this->value;
     }

@@ -2,25 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Entity;
+namespace App\Domain\Post\Entity;
 
-use Faker\Guesser\Name;
-use Carbon\CarbonImmutable;
-use App\Domain\User\ValueObject\Email;
-use App\Domain\User\ValueObject\PlainPassword;
-use App\Domain\User\ValueObject\EmailVerifiedAt;
-use App\Domain\User\ValueObject\NameValueObject;
-use App\Domain\User\ValueObject\EncriptedPassword;
-use App\Domain\User\ValueObject\BirthdayValueObject;
-use App\Domain\User\ValueObject\IsPublicValueObject;
-use App\Domain\UserImage\Entity\UserImageEntityList;
-use App\Domain\UserProfile\Entity\UserProfileEntity;
-use App\Domain\User\ValueObject\TotalNiceValueObject;
-use App\Domain\User\ValueObject\UserSubIdValueObject;
-use App\Domain\User\ValueObject\TotalFavoriteValueObject;
-use App\Domain\UserCredential\Entity\UserCredentialEntity;
-use App\Domain\User\ValueObject\IsBirthdayPublicValueObject;
-use App\Domain\UserMailNotificationSetting\Entity\UserMailNotificationSettingEntity;
+use App\Domain\Post\ValueObject\Body;
+use App\Domain\Post\ValueObject\IsPublic;
+use App\Domain\Post\ValueObject\Title;
+use App\Domain\Post\ValueObject\TopImagePath;
 
 /**
  * 投稿
@@ -29,43 +16,68 @@ final class PostEntity
 {
     public const NAME = '投稿';
 
+    /**
+     * @param int|null          $id
+     * @param int               $userId
+     * @param Title             $title
+     * @param Body              $body
+     * @param TopImagePath|null $topImagePath
+     * @param IsPublic          $isPublic
+     */
     private function __construct(
         private ?int $id,
-        private UserId $userId,
+        private int $userId,
         private Title $title,
         private Body $body,
         private ?TopImagePath $topImagePath,
+        private IsPublic $isPublic,
     ) {
     }
 
     /**
-     * @param array $args
+     * @param  array<string, int|string|bool> $args
      * @return self
      */
-    public function create(array $args): self
+    public static function create(array $args): self
     {
+        $topImagePath = array_key_exists('top_image_path', $args)
+            ? new TopImagePath((string) $args['top_image_path'])
+            : null;
+
         return new self(
             null,
-            $args['user_id'],
-            $args['title'],
-            $args['body'],
-            $args['top_image_path'],
+            (int) $args['user_id'],
+            new Title((string) $args['title']),
+            new Body((string) $args['title']),
+            $topImagePath,
+            new IsPublic((bool) $args['is_public']),
         );
     }
 
-    public function reconstruct(
+    /**
+     * @param  int|null          $id
+     * @param  int               $userId
+     * @param  Title             $title
+     * @param  Body              $body
+     * @param  TopImagePath|null $topImagePath
+     * @param  IsPublic          $isPublic
+     * @return self
+     */
+    public static function reconstruct(
         ?int $id,
-        UserId $userId,
+        int $userId,
         Title $title,
         Body $body,
-        ?TopImagePath $topImagePath
+        ?TopImagePath $topImagePath,
+        IsPublic $isPublic
     ): self {
         return new self(
             $id,
             $userId,
             $title,
             $body,
-            $topImagePath
+            $topImagePath,
+            $isPublic
         );
     }
 
@@ -78,9 +90,9 @@ final class PostEntity
     }
 
     /**
-     * @return UserId
+     * @return int
      */
-    public function getUserId(): UserId
+    public function getUserId(): int
     {
         return $this->userId;
     }
@@ -88,7 +100,7 @@ final class PostEntity
     /**
      * @return Title
      */
-    public function getTitle(): Email
+    public function getTitle(): Title
     {
         return $this->title;
     }
@@ -104,7 +116,7 @@ final class PostEntity
     /**
      * @return TopImagePath|null
      */
-    public function getTopImagePath(): TopImagePath
+    public function getTopImagePath(): ?TopImagePath
     {
         return $this->topImagePath;
     }

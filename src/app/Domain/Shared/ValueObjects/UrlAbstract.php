@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObjects\Type;
 
-use Exception;
+use App\Domain\Shared\ValueObjects\Type\StringTypeAbstract;
 
 /**
  * URLの基底クラス
  */
-abstract class UrlAbstract extends StringAbstract
+abstract class UrlAbstract extends StringTypeAbstract
 {
     /** 最大文字数 */
     public const MAX = 255;
@@ -18,23 +18,28 @@ abstract class UrlAbstract extends StringAbstract
     public const MIN = 1;
 
     /**  URLの正規表現 TODO:*/
-    public const URL_REGEX = 'あとで書く';
+    public const URL_REGEX = 'regexの実装';
 
     /**
-     * @param string $variableName 変数名
-     * @param string $value 値
+     * @param  string $variableName 変数名
+     * @param  string $value        値
      * @return void
      */
     public function validate(
         string $variableName,
         string $value
     ): void {
-        $this->validate($variableName, $value);
+        parent::validate($variableName, $value);
+        $this->isUrlType($value);
     }
 
-    private function isUrlType(string $value) bool
+    /**
+     * @param  string $value
+     * @return bool
+     */
+    private function isUrlType(string $value): bool
     {
-        // TODO: あとでかく
+        // TODO: regexの実装
         return true;
     }
 }
