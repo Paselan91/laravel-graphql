@@ -7,7 +7,7 @@ namespace App\Domain\Shared\ValueObjects\Type;
 use Exception;
 
 /**
- * 文字列の基底クラス
+ * 文字列タイプの基底クラス
  */
 abstract class StringTypeAbstract
 {

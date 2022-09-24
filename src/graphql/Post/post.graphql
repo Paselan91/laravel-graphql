@@ -1,0 +1,10 @@
+type Post {
+    id: ID!
+    user: User! @belongsTo
+    body: String!
+    title: String!
+    top_image_path: String
+    is_public: Boolean
+    created_at: DateTime!
+    updated_at: DateTime!
+}
