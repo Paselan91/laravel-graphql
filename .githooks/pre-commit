@@ -7,8 +7,6 @@ isLintErr=false
 # ファイルをまとめる
 files=""
 
-echo 'hello pre commit'
-
 # コミットするファイルのみ通す
 # ホスト側とコンテナー側でパスが違うので中でリネームする
 for FILE in `git diff --staged --name-only | grep -e .php`; do
@@ -32,7 +30,7 @@ if [ "$filesForFix" != "" ]; then
     echo '--------------------------------'
     echo ' Start PHPCSFixer .... '
     echo ''
-    CSFIXER=`docker-compose exec -T php ./vendor/bin/php-cs-fixer --config=.php-cs-fixer.dist.php fix -v --dry-run $filesForFix`
+    CSFIXER=`docker-compose exec -T app ./vendor/bin/php-cs-fixer --config=.php-cs-fixer.dist.php fix -v --dry-run $filesForFix`
 
     hasFix=`echo $CSFIXER | grep '1)'`
 
@@ -60,7 +58,7 @@ if [ "$phpStanFiles" != "" ]; then
     echo '--------------------------------'
     echo ' Start PHPStan .... '
     echo ''
-    PHPSTAN=`docker-compose exec -T php php vendor/bin/phpstan analyse $phpStanFiles --memory-limit=1G`
+    PHPSTAN=`docker-compose exec -T app php vendor/bin/phpstan analyse $phpStanFiles --memory-limit=1G`
     notError=`echo $PHPSTAN | grep 'No errors'`
 
     if [ "$notError" = "" ]; then
@@ -85,7 +83,7 @@ fi
 echo '--------------------------------'
 echo ' Start Validate Schema .... '
 echo ''
-validateSchema=`docker compose exec -T php php artisan lighthouse:validate-schema`
+validateSchema=`docker compose exec -T app php artisan lighthouse:validate-schema`
 isValidateSchemaErr=`echo $validateSchema | grep 'The defined schema is valid.'`
 if [ "$isValidateSchemaErr" == "" ]; then
     echo ''
@@ -98,7 +96,7 @@ fi
 echo '--------------------------------'
 echo ' Start Test .... '
 echo ''
-test=`docker-compose exec -T php php artisan test --testsuite=Feature`
+test=`docker-compose exec -T app php artisan test --testsuite=Feature`
 isTestError=`echo $test | grep 'FAIL'`
 if [ "$isTestError" != "" ]; then
     echo ''
