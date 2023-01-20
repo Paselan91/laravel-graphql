@@ -91,6 +91,9 @@ if [ "$isValidateSchemaErr" == "" ]; then
     echo ''
     exit 1
 fi
+echo ''
+echo ' End Validate Schema'
+echo ''
 
 # コミット時にテストを実行
 echo '--------------------------------'
