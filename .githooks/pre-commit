@@ -43,7 +43,7 @@ if [ "$filesForFix" != "" ]; then
     # エラーが出た場合exitする
     if [ $isFixErr = "true" ]; then
         echo ''
-        echo composer format でフォーマットしてください。
+        echo make format でフォーマットしてください。
         echo ''
         exit 1
     fi
@@ -55,7 +55,7 @@ fi
 # PHPStan（appのみを対象とする）
 phpStanFiles=`echo $files | grep -e app/`
 if [ "$phpStanFiles" != "" ]; then
-    echo '--------------------------------'
+    echo '┌────────────────────────────────┐'
     echo ' Start PHPStan .... '
     echo ''
     PHPSTAN=`docker-compose exec -T app php vendor/bin/phpstan analyse $phpStanFiles --memory-limit=1G`
@@ -70,17 +70,17 @@ if [ "$phpStanFiles" != "" ]; then
     # phpstanでエラーが出た場合exitする
     if [ $isLintErr = "true" ]; then
         echo ''
-        echo composer lint で型エラーを修正してください。
+        echo make lint で型エラーを修正してください。
         echo ''
         exit 1
     fi
     echo ''
     echo ' End PHPStan '
-    echo ''
+    echo '└────────────────────────────────┘'
 fi
 
 # コミット時にGraphQL Validate Schemaを実行
-echo '--------------------------------'
+echo '┌────────────────────────────────┐'
 echo ' Start Validate Schema .... '
 echo ''
 validateSchema=`docker compose exec -T app php artisan lighthouse:validate-schema`
@@ -93,10 +93,10 @@ if [ "$isValidateSchemaErr" == "" ]; then
 fi
 echo ''
 echo ' End Validate Schema'
-echo ''
+echo '└────────────────────────────────┘'
 
 # コミット時にテストを実行
-echo '--------------------------------'
+echo '┌────────────────────────────────┐'
 echo ' Start Test .... '
 echo ''
 test=`docker-compose exec -T app php artisan test --testsuite=Feature`
@@ -110,4 +110,4 @@ if [ "$isTestError" != "" ]; then
 fi
 echo ''
 echo ' End Test '
-echo ''
+echo '└────────────────────────────────┘'
