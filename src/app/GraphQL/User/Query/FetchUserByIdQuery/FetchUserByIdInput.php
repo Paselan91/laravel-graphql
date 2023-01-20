@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\GraphQL\User\Query\FetchUserByIdQuery;
 
 use App\Domain\User\Entity\UserEntity;
-use Exception;
 use Illuminate\Support\Facades\Validator;
 
 final class FetchUserByIdInput
@@ -44,7 +43,8 @@ final class FetchUserByIdInput
      */
     private static function validate(array $args): void
     {
-        Validator::make($args,
+        Validator::make(
+            $args,
             self::rules(),
             self::attributes(),
         )->validate();
@@ -65,10 +65,10 @@ final class FetchUserByIdInput
      */
     private static function attributes(): array
     {
-        $userNmae = UserEntity::NAME;
+        $userName = UserEntity::NAME;
 
         return [
-            'id' => "{$userNmae}ID"
+            'id' => "{$userName}ID"
         ];
     }
 }
