@@ -111,3 +111,7 @@ lint:
 	docker compose exec app composer lint
 schema:
 	docker compose exec app php artisan lighthouse:validate-schema
+
+setup-githooks:
+	git config --local core.hooksPath .githooks
+	chmod -R +x .githooks
